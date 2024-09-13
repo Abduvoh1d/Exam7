@@ -1,45 +1,92 @@
-import {RxDashboard} from "react-icons/rx";
-import {BsPeopleFill} from "react-icons/bs";
-import {Link} from "react-router-dom";
+/** @jsxImportSource @emotion/react */
+import React, {useState} from "react";
+import {Button, Layout as AntdLayout, Menu, theme} from "antd";
+import {
+    MenuFoldOutlined,
+    MenuUnfoldOutlined,
+} from "@ant-design/icons";
+import {useLocation, useNavigate} from "react-router-dom";
+import styled from "@emotion/styled";
 
-interface MenuItemType {
-    key: string;
-    icon: React.ReactNode;
-    path: string;
-    label: string;
-}
 
-const items: MenuItemType[] = [
-    {
-        key: "job",
-        icon: <RxDashboard/>,
-        path: "/job",
-        label: "Job",
-    },
-    {
-        key: "company",
-        icon: <BsPeopleFill/>,
-        path: "/company",
-        label: "Company",
-    },
-];
-const Layout = () => {
+const {Header, Sider, Content} = AntdLayout;
+
+const StyledAntdLayout = styled(AntdLayout)`
+	min-height: 100vh;
+`;
+
+export const Layout = ({
+                           children,
+                       }: {
+    children: React.ReactNode;
+}) => {
+    const navigate = useNavigate();
+    const [collapsed, setCollapsed] = useState(false);
+    const {
+        token: {colorBgContainer, borderRadiusLG},
+    } = theme.useToken();
+
+    const location = useLocation();
+    console.log({location});
 
     return (
-        <>
-            <ul className={'w-[200px] h-[100vh] p-3 bg-gray-200'}>
-                {
-                    items.map((item: MenuItemType) => (
-                        <Link to={item.path} key={item.key}>
-                            <li
-                                className={`flex items-center h-[40px] gap-3 px-4 rounded hover:bg-gray-400] ${window.location.pathname == item.path ? "bg-gray-400" : ""}`}>{item.icon} {item.label}</li>
-                        </Link>
-                    ))
-                }
-            </ul>
-        </>
-
+        <StyledAntdLayout>
+            <Sider theme="light" trigger={null} collapsible collapsed={collapsed}>
+                <Menu
+                    theme="light"
+                    mode="inline"
+                    defaultSelectedKeys={[location.pathname]}
+                    onSelect={({key}) => {
+                        navigate(key);
+                    }}
+                    items={[
+                        {
+                            key: "/jobs",
+                            label: "Jobs",
+                        },
+                        {
+                            key: "/companies",
+                            label: "Companies",
+                        }
+                    ]}
+                />
+            </Sider>
+            <StyledAntdLayout>
+                <Header
+                    style={{
+                        padding: 0,
+                        background: colorBgContainer,
+                    }}
+                >
+                    <Button
+                        type="text"
+                        icon={
+                            collapsed ? (
+                                <MenuUnfoldOutlined/>
+                            ) : (
+                                <MenuFoldOutlined/>
+                            )
+                        }
+                        onClick={() => setCollapsed(!collapsed)}
+                        style={{
+                            fontSize: "16px",
+                            width: 64,
+                            height: 64,
+                        }}
+                    />
+                </Header>
+                <Content
+                    style={{
+                        margin: "24px 16px",
+                        padding: 24,
+                        minHeight: 280,
+                        background: colorBgContainer,
+                        borderRadius: borderRadiusLG,
+                    }}
+                >
+                    {children}
+                </Content>
+            </StyledAntdLayout>
+        </StyledAntdLayout>
     );
 };
-
-export default Layout;

@@ -1,14 +1,16 @@
-import {configureStore} from '@reduxjs/toolkit'
-import {companyApi} from "./store/company.ts";
-import {jobApi} from "./store/job.ts";
+import { configureStore } from "@reduxjs/toolkit";
+import {companiesApi} from "./store/company";
+import {jobsApi} from "./store/job";
 
 export const store = configureStore({
     reducer: {
-        [jobApi.reducerPath]: jobApi.reducer,
-        [companyApi.reducerPath]: companyApi.reducer,
+        [companiesApi.reducerPath]: companiesApi.reducer,
+        [jobsApi.reducerPath]: jobsApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(jobApi.middleware).concat(companyApi.middleware),
+        getDefaultMiddleware()
+            .concat(companiesApi.middleware)
+            .concat(jobsApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

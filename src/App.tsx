@@ -1,22 +1,40 @@
+import { ConfigProvider } from "antd";
 import {
-    BrowserRouter, Navigate, Route, Routes,
+    createBrowserRouter,
+    Outlet,
+    RouterProvider,
 } from "react-router-dom";
-import Job from "./pages/job/Job.tsx";
-import Company from "./pages/company/Company.tsx";
+import {Companies} from "./pages/company/Company.tsx";
+import {Jobs} from "./pages/job/Job.tsx";
+import {Layout} from "./components/layout.tsx";
 
+const routes = createBrowserRouter([
+    {
+        path: "/",
+        element: (
+            <Layout>
+                <Outlet />
+            </Layout>
+        ),
+        children: [
+            {
+                path: "companies",
+                element: <Companies />,
+            },
+            {
+                path: "jobs",
+                element: <Jobs />,
+            },
+        ],
+    },
+]);
 
 function App() {
     return (
-        <>
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/" element={<Navigate to={'/job'}/>}/>
-                    <Route path={'/job'} element={<Job/>}/>
-                    <Route path={'/company'} element={<Company/>}/>
-                </Routes>
-            </BrowserRouter>
-        </>
-    )
+        <ConfigProvider>
+            <RouterProvider router={routes}></RouterProvider>
+        </ConfigProvider>
+    );
 }
 
 export default App;
